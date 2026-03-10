@@ -1,1 +1,17 @@
-node_modules
+# Dépendances (le dossier est trop lourd pour GitHub)
+node_modules/
+
+# Fichiers de configuration sensibles (TON TOKEN DISCORD)
+.env
+config.json
+
+# Base de données locale (pour éviter d'écraser tes données à chaque déploiement)
+*.sqlite
+package-lock.json
+
+# Fichiers systèmes
+.DS_Store
+thumbs.db
+
+# Logs d'erreurs
+npm-debug.log*
