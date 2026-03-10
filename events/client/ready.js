@@ -1,19 +1,18 @@
 module.exports = {
-name: "ready",
+    name: "ready",
 
-run: async (client) => {
+    run: async (client) => {
+        console.log(`✅ Connecté : ${client.user.tag}`);
 
-console.log(`✅ Connecté : ${client.user.tag}`)
-
-// charger les invitations
-for (const [guildId, guild] of client.guilds.cache) {
-
-const invites = await guild.invites.fetch()
-
-client.invites.set(guildId, invites)
-
-}
-
-}
-
+        // Sécurité pour les invitations
+        for (const [guildId, guild] of client.guilds.cache) {
+            try {
+                const invites = await guild.invites.fetch();
+                client.invites.set(guildId, invites);
+            } catch (err) {
+                // On ignore l'erreur si on n'a pas la permission de voir les invites
+                continue;
+            }
+        }
+    }
 }
