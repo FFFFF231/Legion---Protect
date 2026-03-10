@@ -11,7 +11,7 @@ class bot extends Client {
                 Intents.FLAGS.GUILDS,
                 Intents.FLAGS.GUILD_MESSAGES,
                 Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_PRESENCES // Ajouté pour éviter des erreurs sur certains events
+                Intents.FLAGS.GUILD_PRESENCES
             ]
         })
 
@@ -49,42 +49,40 @@ class bot extends Client {
                 }
             }
         }
-
         console.log(`${this.commands.size} commandes chargées`)
     }
 
     loadEvents(){
         const folders = fs.readdirSync("./events")
 
-        // 🛡️ LISTE NOIRE : On ignore les dossiers qui font crash le bot
+        // 🛡️ SÉCURITÉ : On ignore les dossiers qui font crash le bot
         const blacklist = ["init", "autoUpdate", "soutien"]
 
         for(const folder of folders){
             
-            // Si le dossier est dans la blacklist, on l'ignore complètement
+            // Si le dossier est dans la blacklist, on ne le charge PAS
             if(blacklist.includes(folder)) {
-                console.log(`🚫 Dossier ignoré : ${folder}`)
+                console.log(`🚫 Dossier ignoré par sécurité : ${folder}`)
                 continue
             }
 
-            const files = fs.readdirSync(`./events/${folder}`).filter(f=>f.endsWith(".js"))
+            const folderPath = `./events/${folder}`
+            const files = fs.readdirSync(folderPath).filter(f=>f.endsWith(".js"))
 
             for(const file of files){
                 try {
                     const event = require(`../../events/${folder}/${file}`)
-                    
                     if(event.name && event.run) {
                         this.on(event.name, (...args) => event.run(this, ...args))
                     }
                 } catch (error) {
-                    console.error(`⚠️ Erreur lors du chargement de l'event ${file} :`, error.message)
+                    // On ne crash pas si un fichier est corrompu
+                    continue
                 }
             }
         }
-
-        console.log("✅ Events chargés (Dossiers instables bloqués)")
+        console.log("✅ Events filtrés et chargés")
     }
-
 }
 
 module.exports = { bot }
