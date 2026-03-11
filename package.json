@@ -6,6 +6,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "better-sqlite3": "9.4.0",
     "sqlite3": "^5.1.7",
     "discord-backup": "^3.2.1",
     "discord.js": "13.14.0",
