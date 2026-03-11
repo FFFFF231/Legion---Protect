@@ -1,18 +1,18 @@
 require("dotenv").config();
+// Force Quick.db à utiliser sqlite3 pour éviter l'erreur ELF Header sur Railway
+process.env.QUICKDB_DRIVER = "sqlite3"; 
+
 const { bot } = require("./structures/client");
 
-// 🛡️ SÉCURITÉ JSON : On intercepte les erreurs de l'auto-updateur et des API instables
+// 🛡️ SÉCURITÉ JSON : On intercepte les erreurs
 const originalParse = JSON.parse;
 JSON.parse = function(text) {
-    // Si le texte est indéfini, vide, ou n'est pas une chaîne de caractères
     if (typeof text !== 'string' || !text || text === "undefined" || text === "null") {
-        return {}; // On renvoie un objet vide pour éviter le crash .parse
+        return {}; 
     }
-    
     try {
         return originalParse.apply(this, arguments);
     } catch (e) {
-        // Si le JSON est mal formé (ex: une page d'erreur HTML au lieu de JSON)
         return {}; 
     }
 };
@@ -23,17 +23,14 @@ const client = new bot();
 // 🚧 ANTI-CRASH RADICAL
 process.on("unhandledRejection", (reason) => {
     const errorStr = reason?.toString() || "";
-
-    // On bloque tout ce qui concerne le JSON invalide et le soutien
     if (
         errorStr.includes("SyntaxError") || 
         errorStr.includes("JSON") || 
         errorStr.includes("undefined") ||
         errorStr.includes("soutien.map")
     ) {
-        return; // On ne loggue rien du tout
+        return; 
     }
-
     console.error("[antiCrash] Erreur critique :", reason);
 });
 
