@@ -1,13 +1,14 @@
-# Dépendances (le dossier est trop lourd pour GitHub)
+# Dépendances (le serveur de déploiement les installera lui-même)
 node_modules/
 
-# Fichiers de configuration sensibles (TON TOKEN DISCORD)
+# Fichiers de configuration sensibles
 .env
 config.json
 
-# Base de données locale (pour éviter d'écraser tes données à chaque déploiement)
+# Base de données locale (très important pour SQLite)
 *.sqlite
-package-lock.json
+*.sqlite3
+*.db
 
 # Fichiers systèmes
 .DS_Store
@@ -15,3 +16,5 @@ thumbs.db
 
 # Logs d'erreurs
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
