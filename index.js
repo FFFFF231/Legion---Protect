@@ -20,24 +20,25 @@ JSON.parse = function(text) {
 // On lance le bot
 const client = new bot();
 
-// 🚧 ANTI-CRASH : On filtre les erreurs connues qui polluent les logs
+// 🚧 ANTI-CRASH RADICAL
 process.on("unhandledRejection", (reason) => {
     const errorStr = reason?.toString() || "";
 
-    // On ignore : les erreurs de syntaxe JSON ET l'erreur spécifique au module "soutien"
-    if (errorStr.includes("SyntaxError") || errorStr.includes("soutien.map")) {
-        return; 
+    // On bloque tout ce qui concerne le JSON invalide et le soutien
+    if (
+        errorStr.includes("SyntaxError") || 
+        errorStr.includes("JSON") || 
+        errorStr.includes("undefined") ||
+        errorStr.includes("soutien.map")
+    ) {
+        return; // On ne loggue rien du tout
     }
 
-    console.error("[antiCrash] Unhandled Rejection:", reason);
+    console.error("[antiCrash] Erreur critique :", reason);
 });
 
 process.on("uncaughtException", (err) => {
     const errorStr = err?.toString() || "";
-
-    if (errorStr.includes("SyntaxError") || errorStr.includes("soutien.map")) {
-        return;
-    }
-
-    console.error("[antiCrash] Uncaught Exception:", err);
+    if (errorStr.includes("SyntaxError") || errorStr.includes("JSON") || errorStr.includes("soutien.map")) return;
+    console.error("[antiCrash] Exception critique :", err);
 });
